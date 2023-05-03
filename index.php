@@ -1,6 +1,14 @@
 <?php ob_start();
 $hub = mysqli_connect('localhost', 'root', 'root', 'xxx');
 $data = mysqli_query($hub, "SELECT * FROM xxx");
+
+function total($table){ 
+    global $hub;
+$j1 = mysqli_query($hub, "SELECT SUM($table) FROM xxx");
+$row = mysqli_fetch_array($j1);
+$sum = $row[0];
+return $sum;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,15 +46,17 @@ $data = mysqli_query($hub, "SELECT * FROM xxx");
                 <?php $no = 1;
                 foreach ($data as $key) {
                     $id = $key['id'];
+                    
+
                 ?>
                     <tr>
                         <th><?= $no++ ?></th>
                         <td><?= $key['pemprov'] ?></td>
                         <td><button class="btn btn-sm btn-primary" onclick="toggleText<?php echo $id; ?>()">Hadir</button></td>
-                        <td><?= $key['modis'] ?></td>
-                        <td><?= $key['modiz'] ?></td>
-                        <td><?= $key['jumlah'] ?></td>
-                        <td id="hiddenText<?= $id ?>" style="display:none"><button type="button" class="bg-transparent btn" data-bs-toggle="modal" data-bs-target="#mods<?= $id ?>"><?= $key['kepemilikan'] ?>%</button></td>
+                        <td><?= number_format($key['modis'],0,'.',',')  ?></td>
+                        <td><?= number_format($key['modiz']/ 100, 2, '.', ',') ?></td>
+                        <td><?= number_format($key['jumlah']/ 100, 2, '.', ',') ?></td>
+                        <td id="hiddenText<?= $id ?>" style="display:none"><a href="updater.php?id=<?= $id ?>&&isi=<?= $key['kepemilikan'] ?>" class="bg-transparent btn"><?= $key['kepemilikan'] ?>%</a></td>
 
                     </tr>
                     <script>
@@ -62,36 +72,21 @@ $data = mysqli_query($hub, "SELECT * FROM xxx");
                         }
                     </script>
 
+                <?php }
+                ob_flush(); ?>
+                <tr>
+                    <td></td>
+                    <td><b>Jumlah</b></td>
+                    <td></td>
+                    <td><?= number_format(total("modis"),0,'.',',') ?></td>
+                    <td><?= number_format(total("modiz")/ 100, 2, '.', ',') ?></td>
+                    <td><?=number_format(total("jumlah")/ 100, 2, '.', ',') ?></td>
+                    <td><?= round(total("kepemilikan")) ?>%</td>
+                 
 
-                    <div class="modal fade" id="mods<?=$id?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form action='' method='post'>
-                                <div class="modal-body">
-                                    <input type="text" class="form-control" name="change" value="<?=$key['kepemilikan'] ?>">
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="submit" name="input" class="btn btn-primary">Save changes</button>
-                                </div>
-                            <?php 
-                            if(isset($_POST['input'])){
-                                $change = $_POST['change'];
-                                header('Location:updater.php?id='.$id.'&&change='.$change.'&&name='.$key['pemprov']);
-                            }
-                            
-                            ?>
-                            </form>
-                               
-                            </div>
-                        </div>
-                    </div>
-                    <?php 
-                    
-                } 
-                
-                
-                ob_flush();?>
 
+
+                </tr>
             </tbody>
         </table>
     </div>
