@@ -72,18 +72,25 @@ $data = mysqli_query($hub, "SELECT * FROM xxx");
                                 </div>
                                 <div class="modal-footer">
                                     <button type="submit" name="input" class="btn btn-primary">Save changes</button>
-                                </div></form>
-                                <?php
-                                if(isset($_POST['input'])){
-                                    $change = $_POST['change'];
-                                    header('Location:updater.php?id='.$id.'&&change='.$change);
-                                }
-                                
-                                ?>
+                                </div>
+                            <?php 
+                            if(isset($_POST['input'])){
+                                $change = $_POST['change'];
+                                header('Location:updater.php?id='.$id.'&&change='.$change.'&&name='.$key['pemprov']);
+                            }
+                            
+                            ?>
+                            </form>
+                               
                             </div>
                         </div>
                     </div>
-                <?php }  ob_flush();?>
+                    <?php 
+                    
+                } 
+                
+                
+                ob_flush();?>
 
             </tbody>
         </table>
