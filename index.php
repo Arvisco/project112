@@ -1,4 +1,4 @@
-<?php
+<?php ob_start();
 $hub = mysqli_connect('localhost', 'root', 'root', 'xxx');
 $data = mysqli_query($hub, "SELECT * FROM xxx");
 ?>
@@ -11,7 +11,7 @@ $data = mysqli_query($hub, "SELECT * FROM xxx");
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <title>Index</title>
 </head>
 
@@ -36,37 +36,54 @@ $data = mysqli_query($hub, "SELECT * FROM xxx");
             </thead>
             <tbody>
                 <?php $no = 1;
-                foreach ($data as $key) { ?>
+                foreach ($data as $key) {
+                    $id = $key['id'];
+                ?>
                     <tr>
                         <th><?= $no++ ?></th>
                         <td><?= $key['pemprov'] ?></td>
-                        <td><button class="btn btn-sm btn-primary" onclick="toggleText<?php echo $key['id'] ?>()">Hadir</button></td>
-                        <td id="hiddenText" style="display:none"><?= $key['modis'] ?></td>
-                        <td id="hiddenText2" style="display:none"><?= $key['modiz'] ?></td>
-                        <td id="hiddenText3" style="display:none"><?= $key['jumlah'] ?></td>
-                        <td id="hiddenText4" style="display:none"><?= $key['kepemilikan'] ?></td>
+                        <td><button class="btn btn-sm btn-primary" onclick="toggleText<?php echo $id; ?>()">Hadir</button></td>
+                        <td><?= $key['modis'] ?></td>
+                        <td><?= $key['modiz'] ?></td>
+                        <td><?= $key['jumlah'] ?></td>
+                        <td id="hiddenText<?= $id ?>" style="display:none"><button type="button" class="bg-transparent btn" data-bs-toggle="modal" data-bs-target="#mods<?= $id ?>"><?= $key['kepemilikan'] ?>%</button></td>
 
                     </tr>
                     <script>
-                        function toggleText<?php echo $key['id'] ?>() {
-                            var hiddenText = document.getElementById("hiddenText");
-                            var hiddenText2 = document.getElementById("hiddenText2");
-                            var hiddenText3 = document.getElementById("hiddenText3");
-                            var hiddenText4 = document.getElementById("hiddenText4");
+                        function toggleText<?php echo $id; ?>() {
+                            var hiddenText = document.getElementById("hiddenText<?= $id ?>");
                             if (hiddenText.style.display === "none") {
                                 hiddenText.style.display = "block";
-                                hiddenText2.style.display = "block";
-                                hiddenText3.style.display = "block";
-                                hiddenText4.style.display = "block";
+
                             } else {
                                 hiddenText.style.display = "none";
-                                hiddenText2.style.display = "none";
-                                hiddenText3.style.display = "none";
-                                hiddenText4.style.display = "none";
+
                             }
                         }
                     </script>
-                <?php } ?>
+
+
+                    <div class="modal fade" id="mods<?=$id?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <form action='' method='post'>
+                                <div class="modal-body">
+                                    <input type="text" class="form-control" name="change" value="<?=$key['kepemilikan'] ?>">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" name="input" class="btn btn-primary">Save changes</button>
+                                </div></form>
+                                <?php
+                                if(isset($_POST['input'])){
+                                    $change = $_POST['change'];
+                                    header('Location:updater.php?id='.$id.'&&change='.$change);
+                                }
+                                
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php }  ob_flush();?>
 
             </tbody>
         </table>
