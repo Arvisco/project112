@@ -2,12 +2,13 @@
 $hub = mysqli_connect('localhost', 'root', 'root', 'xxx');
 $data = mysqli_query($hub, "SELECT * FROM xxx");
 
-function total($table){ 
+function total($table)
+{
     global $hub;
-$j1 = mysqli_query($hub, "SELECT SUM($table) FROM xxx");
-$row = mysqli_fetch_array($j1);
-$sum = $row[0];
-return $sum;
+    $j1 = mysqli_query($hub, "SELECT SUM($table) FROM xxx");
+    $row = mysqli_fetch_array($j1);
+    $sum = $row[0];
+    return $sum;
 }
 ?>
 <!DOCTYPE html>
@@ -46,16 +47,16 @@ return $sum;
                 <?php $no = 1;
                 foreach ($data as $key) {
                     $id = $key['id'];
-                    
+
 
                 ?>
                     <tr>
                         <th><?= $no++ ?></th>
                         <td><?= $key['pemprov'] ?></td>
-                        <td><button class="btn btn-sm btn-primary" onclick="toggleText<?php echo $id; ?>()">Hadir</button></td>
-                        <td><?= number_format($key['modis'],0,'.',',')  ?></td>
-                        <td><?= number_format($key['modiz']/ 100, 2, '.', ',') ?></td>
-                        <td><?= number_format($key['jumlah']/ 100, 2, '.', ',') ?></td>
+                        <td><button style="color: white; background-color: #007BFF; border-color: #007BFF;" class="btn btn-sm" onclick="toggleText<?php echo $id; ?>()">Hadir</button></td>
+                        <td><?= number_format($key['modis'], 0, '.', ',')  ?></td>
+                        <td><?= number_format($key['modiz'] / 100, 2, '.', ',') ?></td>
+                        <td><?= number_format($key['jumlah'] / 100, 2, '.', ',') ?></td>
                         <td id="hiddenText<?= $id ?>" style="display:none"><a href="updater.php?id=<?= $id ?>&&isi=<?= $key['kepemilikan'] ?>" class="bg-transparent btn"><?= $key['kepemilikan'] ?>%</a></td>
 
                     </tr>
@@ -69,6 +70,7 @@ return $sum;
                                 hiddenText.style.display = "none";
 
                             }
+                            
                         }
                     </script>
 
@@ -78,11 +80,11 @@ return $sum;
                     <td></td>
                     <td><b>Jumlah</b></td>
                     <td></td>
-                    <td><?= number_format(total("modis"),0,'.',',') ?></td>
-                    <td><?= number_format(total("modiz")/ 100, 2, '.', ',') ?></td>
-                    <td><?=number_format(total("jumlah")/ 100, 2, '.', ',') ?></td>
+                    <td><?= number_format(total("modis"), 0, '.', ',') ?></td>
+                    <td><?= number_format(total("modiz") / 100, 2, '.', ',') ?></td>
+                    <td><?= number_format(total("jumlah") / 100, 2, '.', ',') ?></td>
                     <td><?= round(total("kepemilikan")) ?>%</td>
-                 
+
 
 
 
@@ -90,6 +92,14 @@ return $sum;
             </tbody>
         </table>
     </div>
+    <style>
+        #yaelah:focus {
+            background-color: red;
+            color: white;
+        }
+
+        
+    </style>
 
 </body>
 
