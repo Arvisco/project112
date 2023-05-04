@@ -31,7 +31,7 @@ function total($table)
             <br> PERIODE : 30 NOVEMBER 2022
         </h4>
 
-        <table class="table table-bordered table-light text-center">
+        <table id="myTable" class="table table-bordered table-light text-center">
             <thead>
                 <tr>
                     <th scope="col">No</th>
@@ -53,11 +53,11 @@ function total($table)
                     <tr>
                         <th><?= $no++ ?></th>
                         <td><?= $key['pemprov'] ?></td>
-                        <td><button style="color: white; background-color: #007BFF; border-color: #007BFF;" class="btn btn-sm" onclick="toggleText<?php echo $id; ?>()">Hadir</button></td>
+                        <td><button class="btn btn-sm" onclick="toggleText<?php echo $id; ?>()">Hadir</button></td>
                         <td><?= number_format($key['modis'], 0, '.', ',')  ?></td>
                         <td><?= number_format($key['modiz'] / 100, 2, '.', ',') ?></td>
                         <td><?= number_format($key['jumlah'] / 100, 2, '.', ',') ?></td>
-                        <td id="hiddenText<?= $id ?>" style="display:none"><a href="updater.php?id=<?= $id ?>&&isi=<?= $key['kepemilikan'] ?>" class="bg-transparent btn"><?= $key['kepemilikan'] ?>%</a></td>
+                        <td id="hiddenText<?= $id ?>" style="display:none"><a href="updater.php?id=<?= $id ?>&&isi=<?= $key['kepemilikan'] ?>&&isi2=<?= $key['jumlah'] ?>&&isi3=<?= $key['modiz'] ?>&&isi4=<?= $key['modis'] ?>" class="bg-transparent btn"><?= $key['kepemilikan'] ?>%</a></td>
 
                     </tr>
                     <script>
@@ -70,8 +70,35 @@ function total($table)
                                 hiddenText.style.display = "none";
 
                             }
-                            
+
                         }
+                        var table = document.getElementById("myTable");
+                        var resultSpan = document.getElementById("result");
+
+                        // Define a function to calculate the sum
+                        function sumTable() {
+                            var cells = table.getElementById("hehe");
+                            var sum = 0;
+
+                            for (var i = 0; i < cells.length; i++) {
+                                var cellValue = parseInt(cells[i].innerHTML);
+                                if (!isNaN(cellValue)) {
+                                    sum += cellValue;
+                                }
+                            }
+
+                            resultSpan.innerHTML = "Sum: " + sum;
+                        }
+
+                        // Call the sumTable function to calculate the initial sum
+                        sumTable();
+
+                        // Listen for changes to the table using MutationObserver
+                        var observer = new MutationObserver(sumTable);
+                        observer.observe(table, {
+                            childList: true,
+                            subtree: true
+                        });
                     </script>
 
                 <?php }
@@ -83,7 +110,7 @@ function total($table)
                     <td><?= number_format(total("modis"), 0, '.', ',') ?></td>
                     <td><?= number_format(total("modiz") / 100, 2, '.', ',') ?></td>
                     <td><?= number_format(total("jumlah") / 100, 2, '.', ',') ?></td>
-                    <td><?= round(total("kepemilikan")) ?>%</td>
+                    <td><span id="result"></span>%</td>
 
 
 
@@ -93,12 +120,10 @@ function total($table)
         </table>
     </div>
     <style>
-        #yaelah:focus {
+        #yaelah {
             background-color: red;
             color: white;
         }
-
-        
     </style>
 
 </body>
